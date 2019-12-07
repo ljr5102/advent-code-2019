@@ -1,0 +1,74 @@
+def collect_input
+  File.readlines("./input.txt").first.strip.split(",").map(&:to_i)
+end
+
+def run(input_array)
+  pos = 0
+  val = input_array[pos]
+  op_code = parse_op_code(val)
+  until op_code == 99
+    if op_code == 1 || op_code == 2
+      input_pos_one = input_array[pos + 1]
+      input_pos_two = input_array[pos + 2]
+      first_param = parse_parameter_mode(val, 1)
+      second_param = parse_parameter_mode(val, 2)
+      third_param = parse_parameter_mode(val, 3) # not really necessary
+      output_pos = input_array[pos + 3]
+      first_val = val_by_param(input_array, input_pos_one, first_param)
+      second_val = val_by_param(input_array, input_pos_two, second_param)
+      if op_code == 1
+        input_array[output_pos] = first_val + second_val
+      elsif op_code == 2
+        input_array[output_pos] = first_val * second_val
+      end
+      pos += 4
+    elsif op_code == 3 || op_code == 4
+      output_pos = input_array[pos + 1]
+      first_param = parse_parameter_mode(val, 1)
+      output_val = val_by_param(input_array, output_pos, first_param)
+      if op_code == 3
+        print "Please enter input: "
+        input_array[output_pos] = gets.chomp.to_i
+      elsif op_code == 4
+        puts output_val
+      end
+      pos += 2
+    else
+      raise "hell"
+    end
+    val = input_array[pos]
+    op_code = parse_op_code(val)
+  end
+  input_array
+end
+
+def parse_op_code(val)
+  val % 10
+end
+
+def parse_parameter_mode(val, parameter)
+  if parameter == 1
+    val / 100 % 10
+  elsif parameter == 2
+    val / 1000 % 10
+  elsif parameter == 3
+    val / 10000 % 10
+  else
+    raise "hell"
+  end
+end
+
+def val_by_param(array, pos, param)
+  if param == 0
+    array[pos]
+  elsif param == 1
+    pos
+  else
+    raise "hell"
+  end
+end
+
+if __FILE__ == $PROGRAM_NAME
+  input = collect_input
+  run(input)
+end
