@@ -7,7 +7,7 @@ def run(input_array)
   val = input_array[pos]
   op_code = parse_op_code(val)
   until op_code == 99
-    if op_code == 1 || op_code == 2
+    if [1, 2, 5, 6, 7, 8].include?(op_code)
       input_pos_one = input_array[pos + 1]
       input_pos_two = input_array[pos + 2]
       first_param = parse_parameter_mode(val, 1)
@@ -18,10 +18,21 @@ def run(input_array)
       second_val = val_by_param(input_array, input_pos_two, second_param)
       if op_code == 1
         input_array[output_pos] = first_val + second_val
+        pos += 4
       elsif op_code == 2
         input_array[output_pos] = first_val * second_val
+        pos += 4
+      elsif op_code == 5
+        pos = first_val.positive? ? second_val : pos + 3
+      elsif op_code == 6
+        pos = first_val.zero? ? second_val : pos + 3
+      elsif op_code == 7
+        input_array[output_pos] = first_val < second_val ? 1 : 0
+        pos += 4
+      elsif op_code == 8
+        input_array[output_pos] = first_val == second_val ? 1 : 0
+        pos += 4
       end
-      pos += 4
     elsif op_code == 3 || op_code == 4
       output_pos = input_array[pos + 1]
       first_param = parse_parameter_mode(val, 1)
